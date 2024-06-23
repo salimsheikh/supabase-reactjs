@@ -116,6 +116,8 @@ export default function App() {
       if(!response.error){
         if(!response.error){
           setTodo((currentTodo) => currentTodo.filter((todo) => todo.id !== id));
+        }else{
+          console.log(response.error);
         }
       }
     }
@@ -138,10 +140,11 @@ export default function App() {
                       todo.map(
                         (value, index) => {
                           const text_color = value.complete === true ? 'green' : 'none';
+                          const status_text= value.complete === true ? 'Completed' : 'Complete';
                           return (
                             <tr key={index}>
                                 <td style={{color:text_color}}>{value.title}</td>
-                                <td><button onClick={()=>handleUpdate(value.id)}>Complete</button></td>
+                                <td><button onClick={()=>handleUpdate(value.id)}>{status_text}</button></td>
                                 <td><button onClick={()=>handleDelete(value.id)}>Delete</button></td>
                             </tr>
                           );
