@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { supabase } from './lib/helper/supabase_client'
 
 export default function App() {
@@ -68,18 +68,27 @@ export default function App() {
       }
     }
 
+    const inputRef = useRef();
+    const {error, setError} = useState(null);
+
+    const handleCreateTody = async () => {
+      const title = inputRef.current.value;
+        const response = await supabase.from('todo').insert({title:title, user_id: user.id}).select("*").single();
+        console.log(response);
+    }
+
     return (
       <div>
-
-        {user ? (
+        <div>
+          <h1>React Supabase database CRUD and policy</h1>
           <div>
-            <h1>User is logged in</h1>
-            <button onClick={logout}>Logout</button>
+              <input ref={inputRef} />
+              <button onClick={handleCreateTody} > add</button>
+
+              {error && <pre>error.message</pre>}
+
           </div>
-        ) : (
-          <button onClick={login}>Login via github</button>
-        )}
-      
+        </div>      
       </div>
     )  
   }
