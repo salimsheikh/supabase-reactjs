@@ -125,7 +125,7 @@ export default function App() {
     return (
       <div>
         <div>
-          <h1>React Supabase database CRUD and policy</h1>
+          <h1>React Supabase database</h1>
           {user? (
               <div>
                 <div>
