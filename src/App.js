@@ -83,6 +83,7 @@ export default function App() {
       
       if(response.data){
         setTodo((currentTodo) => [...currentTodo, response.data]);
+        inputRef.current.value = "";
       }
     }
 
@@ -94,14 +95,19 @@ export default function App() {
       console.log(response);
     }
 
-    const handleUpdate = async (id) => {
-      const response = await supabase.from("todo").update({complete:true}).eq("id",id).select("*").single();      
+    const handleUpdate = async (id, complete) => {      
+
+      //console.log(complete);
+
+      const _complete = complete === true ? false : true; 
+
+      const response = await supabase.from("todo").update({complete:_complete}).eq("id",id).select("*").single();
       setError(response?.error);
 
       if(!response.error){
         setTodo((currentTodo) => currentTodo.map((todo) => {
           if(todo.id === id){
-              todo.complete = true;
+              todo.complete = _complete;
           }
           return todo;
         }))
@@ -123,7 +129,7 @@ export default function App() {
     }
 
     return (
-      <div>
+      <div style={{margin:25}}>
         <div>
           <h1>React Supabase database</h1>
           {user? (
@@ -134,25 +140,28 @@ export default function App() {
                   {error && <pre>error.message</pre>}
                 </div>
 
+                <div style={{marginTop:15}}>
                 <table>
                   <tbody>
-                    {todo && 
+                    {todo &&                     
                       todo.map(
                         (value, index) => {
-                          const text_color = value.complete === true ? 'green' : 'none';
-                          const status_text= value.complete === true ? 'Completed' : 'Complete';
+                          const text_color = value.complete === true ? 'green' : 'black';
+                          const status_text= value.complete === true ? 'Completed' : 'Pending';
+                          console.log(text_color);
                           return (
                             <tr key={index}>
                                 <td style={{color:text_color}}>{value.title}</td>
-                                <td><button onClick={()=>handleUpdate(value.id)}>{status_text}</button></td>
+                                <td><button onClick={()=>handleUpdate(value.id, value.complete)} style={{width:110}}>{status_text}</button></td>
                                 <td><button onClick={()=>handleDelete(value.id)}>Delete</button></td>
                             </tr>
                           );
                         }
                       )
-                    }
+                    }                    
                   </tbody>
                  </table>
+                </div>
               </div>
           ):(
             <div></div>
